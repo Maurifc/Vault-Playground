@@ -1,0 +1,127 @@
+-----------------------
+---- Goal
+-----------------------
+
+- Simple Vault Installations
+- Create some authorization for Pods
+
+-----------------------
+---- Commands
+-----------------------
+
+# Start Vault Dev Server
+vault server -dev
+
+# Export Vault Ip Address
+export VAULT_ADDR='http://127.0.0.1:8200'
+
+# Export generated root token
+export VAULT_TOKEN=" "
+
+# Access Vault Key / Value Engine
+vault kv <subcommand> [options] [args]
+
+# Commands available
+delete: delete version of secrets
+destroy: destroy permanently one or more versions of secrets
+get: retrieve secrets
+list: list data or secrets
+put: sets or update secrets (replace)
+patch: same as above but doesn´t replace
+rollback: rollback to previous version of secrets
+undelete: restore a deleted version of secrets
+
+# Help with kv command
+vault kv -help
+
+-----------------------
+---- Put
+-----------------------
+
+# Write a secret
+vault kv put
+
+# Write a secret from a file
+vault kv put secret/SECRET_NAME @data.json
+
+-----------------------
+---- Retrieve
+-----------------------
+
+# Retrieve secrets
+vault kv get secret/SECRET_NAME
+
+# Retrive only the value of a given field
+vault kv get -field=FIELD_NAME secret/SECRET_NAME
+
+# Retrieve a secret on json format
+vault kv get -format=json secret/SECRET_NAME | jq -r .data.data.FIELD_NAME
+
+-----------------------
+---- Delete
+-----------------------
+
+# Delete a secret (can be recovered)
+vault kv delete secret/hello
+
+# Recover a secret version
+vault kv undelete -versions=VERSION_NUMBER secret/SECRET_NAME
+
+-----------------------
+---- Secret Engine
+-----------------------
+# Enable a secret engine in a given path
+vault secrets enable -path=PATH SECRET_ENGINE
+
+# List all secret engines enabled
+vault secrets list
+
+# Create a secret on another path
+vault kv put PATH/SECRET value="123456"
+
+# Remove a lease (leaseid is print out when you read the secret)
+vault lease revoke LEASE_ID
+
+-----------------------
+---- Token
+-----------------------
+# Create a auth token
+vault token create
+
+# Login with a token
+vault login TOKEN
+
+# Remoke token
+vault token revoke TOKEN
+
+# Token info
+vault token lookup
+
+-----------------------
+---- Auth Methods
+-----------------------
+# List auth methods available
+vault auth list
+
+# Get help about some auth method
+vault auth help AUTH_METHOD
+
+# Login with an auth method that isn't token
+vault login -method=AUTH_METHOD
+
+-----------------------
+---- Policy
+-----------------------
+# Write a policy from file
+vault policy write POLICY_NAME FILE_PATH.hcl
+
+# List policy
+vault policy list
+
+
+---------------------
+Enable a secret for cloud provider
+Configure secret engine (with a privileged account)
+Create a policy and attach a provider role 
+Generate a secret 
+
