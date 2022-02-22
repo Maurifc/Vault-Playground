@@ -1,11 +1,16 @@
 ## Due to this app work, you need:
-- Vault up and running
+- Vault up and running (use vault-vm for simplicity)
 - Helm installed
 - Kubectl installed
 - Minikube running
 
 ## Follow the steps below to setup your secret, policy and role:
 
+Export Vault IP Address and access token
+```bash
+export VAULT_ADDR='http://192.168.56.50:8200'
+export VAULT_TOKEN="root"
+```
 Create a key/value secret at secret/data/myapp/config
 ```bash
 vault kv put secret/myapp/config username='giraffe' password='salsa'
@@ -18,17 +23,17 @@ vault auth enable kubernetes
 
 Export an environment variable with your Vault IP address
 ```bash
-export EXTERNAL_VAULT_ADDR=192.168.56.10
+export EXTERNAL_VAULT_ADDR=192.168.56.50
 ```
 
 Create the external-vault.yaml file from its template
 ```bash
-envsubst < myapp/external-vault.yaml.template > myapp/external-vault.yaml
+envsubst < external-vault.yaml.template > external-vault.yaml
 ```
 
 Apply the Kubernetes manifest
 ```bash
-kubectl apply -f myapp/external-vault.yaml
+kubectl apply -f external-vault.yaml
 ```
 
 Install Vault Injector with Helm
@@ -50,10 +55,12 @@ VAULT_HELM_SECRET_NAME=$(kubectl get secrets --output=json | jq -r '.items[].met
 
 TOKEN_REVIEW_JWT=$(kubectl get secret $VAULT_HELM_SECRET_NAME --output='go-template={{ .data.token }}' | base64 --decode)
 
+KUBE_CA_CERT=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.certificate-authority-data}' | base64 --decode)
+
 KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 ```
 
-...and write K8s configuration to Vault
+...and configure K8s auth on Vault
 ```bash
 vault write auth/kubernetes/config \
         token_reviewer_jwt="$TOKEN_REVIEW_JWT" \
@@ -65,10 +72,10 @@ vault write auth/kubernetes/config \
 Create access policy to secret
 ```bash
 vault policy write myapp - <<EOF
-    path "secret/data/myapp/config" {
-    capabilities = ["read"]
-    }
-    EOF
+path "secret/data/myapp/config" {
+capabilities = ["read"]
+}
+EOF
 ```
 
 Create a role to allow service account to access the secret
@@ -82,12 +89,13 @@ vault write auth/kubernetes/role/myapp \
 
 ## Create the myapp deployment and service account
 
-Apply the kubernetes manifest from myapp folder
 ```bash
-kubectl apply -f myapp/
+kubectl apply -f myapp-deploy.yaml
+kubectl apply -f serviceaccount.yaml
 ```
 
-Checkout the logs and you should see your secret load as env vars
+Wait 'till pods initialize and checkout the logs for yours secrets.
+(This app prints out the env on console. Don't do this in production)
 
 ```bash
 kubernetes logs myapp -c myapp
