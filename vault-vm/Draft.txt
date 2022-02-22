@@ -12,6 +12,9 @@
 # Start Vault Dev Server
 vault server -dev
 
+# Start Vault Dev Server with 'root' as root token
+vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
+
 # Export Vault Ip Address
 export VAULT_ADDR='http://127.0.0.1:8200'
 
