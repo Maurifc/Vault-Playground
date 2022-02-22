@@ -98,7 +98,7 @@ Wait 'till pods initialize and checkout the logs for yours secrets.
 (This app prints out the env on console. Don't do this in production)
 
 ```bash
-kubernetes logs myapp -c myapp
+kubectl logs POD -c myapp
 ```
 
 ### References:
