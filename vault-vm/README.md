@@ -11,8 +11,7 @@ vagrant ssh
 ## Start Vault Server on dev mode
 Close this terminal cause the server to stop
 ```bash
-vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.
-0:8200
+vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
 ```
 
 ## Pause VM when not using it
