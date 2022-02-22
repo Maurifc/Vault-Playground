@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  myapp
+  namespace: default
+  labels:
+    app:  myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  myapp
+      ### Use this block 
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: 'devweb-app' #secret access role
+        vault.hashicorp.com/agent-inject-secret-config: 'secret/data/myapp/config' #secret path
+        vault.hashicorp.com/agent-inject-template-config: | #format secret using key=value format
+          {{ with secret "secret/data/myapp/config" -}}
+          {{ range $k, $v := .Data.data }}
+          {{ $k }}={{ $v }}
+          {{ end }}
+          {{- end }}
+      ###    
+    spec:
+      serviceAccountName: myapp
+      containers:
+      - name:  myapp
+        image:  alpine:latest
+        imagePullPolicy: IfNotPresent
+        command: ['sh']
+        args:
+        - '-c'
+        - 'export $(/bin/cat /vault/secrets/config) && env && sleep 1000' # load envs from secret destination file
