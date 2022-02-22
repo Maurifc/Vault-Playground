@@ -27,7 +27,7 @@ spec:
           {{- end }}
       ###    
     spec:
-      serviceAccountName: myapp-sa
+      serviceAccountName: myapp-sa # use an service account according to your role
       containers:
       - name:  myapp
         image:  alpine:latest
