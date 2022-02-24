@@ -1,6 +1,8 @@
 # GCP Service Account Keys
 *gcp-key*.json
 
+.terraform.lock.hcl
+
 # Local .terraform directories
 **/.terraform/*
 
