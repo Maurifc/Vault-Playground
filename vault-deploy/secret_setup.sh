@@ -12,7 +12,7 @@ fi
 
 #
 printf "\nEnabling kv secrets v2\n";
-vault secrets enable -version=2 kv
+vault secrets enable -version=2 -path=secret/ kv
 
 #
 printf "\nCreating secrets from file %s\n" $SECRET_FILE;
