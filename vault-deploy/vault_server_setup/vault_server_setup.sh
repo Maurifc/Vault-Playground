@@ -91,6 +91,11 @@ helm install vault hashicorp/vault \
     -f custom_values.yaml \
     --version 0.19.0
 
+
+printf "\nPatching service loadbalancer with Static IP\n"
+envsubst < service_patch.yaml.tpl > ${TMPDIR}/service_patch.yaml
+kubectl patch service vault --patch-file ${TMPDIR}/service_patch.yaml
+
 printf "\nWaiting for Vault Server pods...\n"
 
 while [[ $pod_status != '"Running"' ]]
