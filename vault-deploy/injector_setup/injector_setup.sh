@@ -24,9 +24,6 @@ then
     exit 1;
 fi
 
-###########
-# check if need to install injector
-
 #
 if [[ $TLS_ENABLED = true ]];
 then
