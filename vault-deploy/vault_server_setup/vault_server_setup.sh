@@ -38,7 +38,9 @@ DNS.1 = ${SERVICE}
 DNS.2 = ${SERVICE}.${NAMESPACE}
 DNS.3 = ${SERVICE}.${NAMESPACE}.svc
 DNS.4 = ${SERVICE}.${NAMESPACE}.svc.cluster.local
+DNS.5 = external-vault
 IP.1 = 127.0.0.1
+IP.2 = ${VAULT_HOST}
 EOF
 
 printf "\nCreating CSR\n"
