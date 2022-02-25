@@ -2,9 +2,9 @@
 
 printf "Sourcing envs from .env file\n";
 # Check if .env exists
-if [ -f .env ];
+if [ -f ../.env ];
 then
-    source .env;
+    source ../.env;
 else
     printf "Error: .env file not found\n";
     exit 1;
@@ -101,6 +101,6 @@ done
 printf "\nVault Pod is running\n"
 
 printf "\nInitializing Vault\nKeys saved at %s\n" $TMPDIR/vault-init
-kubectl exec -ti vault-0 --namespace $NAMESPACE -- vault operator init > $TMPDIR/vault-init
+kubectl exec -ti vault-0 --namespace $NAMESPACE -- vault operator init | sed 's/\x1b\[[0-9;]*m//g' >  $TMPDIR/vault-init
 
-printf "Vault deployed!\nGet your keys at %s and CA certificate at %" $TMPDIR/vault-init $TMPDIR/vault.ca
+printf "Vault deployed!\nGet your keys at %s and CA certificate at %s" $TMPDIR/vault-init $TMPDIR/vault.ca

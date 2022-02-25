@@ -27,3 +27,16 @@ server:
       storage "file" {
         path = "/vault/data"
       }
+
+ingress:
+    enabled: true
+    labels:
+      traffic: external
+    annotations: {}
+
+    pathType: Prefix
+
+    activeService: true
+    hosts:
+      - host: vault.local
+        paths: /
