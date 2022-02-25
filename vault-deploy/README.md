@@ -38,11 +38,11 @@ cp .env.sample .env
 nano .env
 ```
 
-Check these variables
+Set these variables
 ```
 export VAULT_HOST=STATIC IP HERE
 ...
-export CONTEXT_VAULT_CLUSTER=CONTEXT TO YOUR CLUSTER
+export CONTEXT_VAULT_CLUSTER=KUBECTL CONTEXT (VAULT SERVER)
 ```
 
 
@@ -83,11 +83,7 @@ sudo cp tmp/vault.ca /usr/local/share/ca-certificates/vault.crt
 sudo update-ca-certificates
 ```
 
-
-
-
-
- Source .env to load Vault Root token
+Source .env to load Vault Root token
 ```
 source .env
 ```
@@ -97,9 +93,90 @@ Check server vault status
 vault status
 ```
 
-## Setup Auth Method
-TODO
+## Setup Injector
+### Requirements:
+- Kubernetes Cluster for Client
+- Kubectl working with your cluster
+- vault.ca file
+
+
+Set these variables at .env file
+```
+# Vault Server IP Address (Check Terraform output)
+export VAULT_HOST=STATIC IP HERE
+...
+# Cluster that will consume secrets from Vault
+export CONTEXT_CLIENT_CLUSTER=KUBECTL CONTEXT (CLIENT CLUSTER)
+```
+
+**Put vault.ca file (from the Vaul Server cluster) on injector_setup dir**  
+If you just installed Vaul Server, copy vault.ca file from vault_server_setup/tmp
+```bash
+cp vault_server_setup/tmp/vault.ca injector_setup/
+```
+
+Install Vault Injector
+```bash
+cd injector_setup
+./injector_setup.sh
+```
+
+## Setup Kubernetes Authentication Method on Vault
+### Requirements:
+- Vault credentials
+- Kubectl working with your client cluster
+
+
+Set these variables at .env file
+```
+# Vault Server IP Address (Check Terraform output)
+export VAULT_HOST=<STATIC IP HERE>
+
+# Vault Access token
+export VAULT_TOKEN=<YOUR TOKEN HERE>
+...
+# Cluster that will consume secrets from Vault
+export CONTEXT_CLIENT_CLUSTER=<KUBECTL CONTEXT - CLIENT CLUSTER>
+```
+
+Enable Kubernetes Authentication Method
+```bash
+cd auth_method_setup
+./auth_method_setup.sh
+```
 
 ## Insert Secrets, Policy and Role
-TODO
+### Requirements:
+- Vault credentials
+
+Set these variables at .env file
+```
+# Vault Server IP Address (Check Terraform output)
+export VAULT_HOST=<STATIC IP HERE>
+
+# Vault Access token
+export VAULT_TOKEN=<YOUR TOKEN HERE>
+```
+
+Enter secret_setup directory
+```
+cd secret_setup
+```
+
+Create a secret.json file from secret.json.sample
+```
+cp secret.json.sample secret.json
+```
+
+Edit secret.json according your needs
+```
+{
+    "DB_PASS": 123456,
+    "API_TOKEN": "ABCDEFG"    
+}
+```
+Put the secret on Vault server
+```bash
+./secret_setup.sh
+```
 
