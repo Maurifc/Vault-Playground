@@ -2,9 +2,9 @@
 
 printf "Sourcing envs from .env file\n";
 # Check if .env exists
-if [ -f .env ];
+if [ -f ../.env ];
 then
-    source .env;
+    source ../.env;
 else
     printf "Error: .env file not found\n";
     exit 1;
@@ -19,31 +19,11 @@ then
     exit 1;
 fi
 
-###########
-# check if need to install injector
-
-#
-if [ $TLS_ENABLED = true ];
+printf "\nChecking if injector is running\n";
+if ! kubectl get deploy vault-agent-injector; 
 then
-    printf "\nInstalling vault Injector: TLS Enabled\n";
-    EXTERNAL_URL="https://external-vault:8200"
-else
-    printf "\nInstalling vault Injector: TLS Disable\nd"
-    EXTERNAL_URL="http://external-vault:8200"
+    printf "Install injector on client cluster before setting up authentication method\n";
 fi
-
-helm install vault hashicorp/vault \
-    --set "injector.externalVaultAddr=${EXTERNAL_URL}" --version 0.19.0
-
-#
-printf "\nCreating Service and Endpoint for injector\n";
-envsubst < injector_setup/external-vault.yaml.template > tmp/external-vault.yaml
-kubectl apply -f tmp/external-vault.yaml
-
-#
-#########
-
-#
 
 printf "\nEnabling Vault Kubernetes Auth Method\n";
 vault auth enable kubernetes
