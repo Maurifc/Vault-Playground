@@ -10,6 +10,13 @@ else
     exit 1;
 fi
 
+
+if [ ! -f secret.json ];
+then
+    printf "Error: secret.json file not found\n";
+    exit 1;
+fi
+
 #
 printf "\nEnabling kv secrets v2\n";
 vault secrets enable -version=2 -path=secret/ kv
