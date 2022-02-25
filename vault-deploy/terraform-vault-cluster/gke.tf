@@ -1,7 +1,7 @@
 # GKE cluster
 resource "google_container_cluster" "primary" {
-  name     = "${var.project_id}-gke"
-  location = var.region
+  name     = var.gke_cluster_name
+  location = var.zone
 
   # Workaround for separatery node pool creation 
   remove_default_node_pool = true
@@ -25,12 +25,17 @@ resource "google_container_cluster" "primary" {
       start_time = "06:00"
     }
   }
+
+  ip_allocation_policy {
+    cluster_ipv4_cidr_block  = "/17"
+    services_ipv4_cidr_block = "/17"
+  }
 }
 
 # Separated Node Pool - Need for future changes, on node pool, without recreating the whole cluster
 resource "google_container_node_pool" "primary_nodes" {
   name       = "${google_container_cluster.primary.name}-node-pool"
-  location   = var.region
+  location   = var.zone
   cluster    = google_container_cluster.primary.name
   node_count = var.gke_num_nodes
 

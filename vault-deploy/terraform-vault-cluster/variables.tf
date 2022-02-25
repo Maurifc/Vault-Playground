@@ -1,7 +1,8 @@
-# Number of GKE Nodes per zone 
+variable "gke_cluster_name" {
+  default     = "vaulter"
+}
 variable "gke_num_nodes" {
-  default     = 1
-  description = "number of gke nodes per zone"
+  default     = 2
 }
 
 # Provider
@@ -12,9 +13,8 @@ variable "credentials_file" {
 }
 
 variable "region" {
-  default = "us-east1"
+  default = "southamerica-east1"
 }
-
 variable "zone" {
-  default = "us-east1-d"
+  default = "southamerica-east1-a"
 }

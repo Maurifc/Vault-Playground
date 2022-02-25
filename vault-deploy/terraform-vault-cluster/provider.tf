@@ -14,3 +14,11 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
+
+terraform {
+  required_version = "~>1.1.6"
+  backend "gcs" {
+    bucket = "terraform-tlg-states"
+    prefix = "ptm-hml/state"
+  }
+}
