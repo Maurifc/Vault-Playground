@@ -22,7 +22,8 @@ fi
 printf "\nChecking if injector is running\n";
 if ! kubectl get deploy vault-agent-injector; 
 then
-    printf "Install injector on client cluster before setting up authentication method\n";
+    printf "\nError: Install Vault Injector on client cluster before setting up authentication method\n";
+    exit 1;
 fi
 
 printf "\nEnabling Vault Kubernetes Auth Method\n";
