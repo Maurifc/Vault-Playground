@@ -26,44 +26,73 @@
 
 ------
 ## Setup Vault Server
+### Requirements
+- Kubernetes cluster
+- Static external IP
+- Kubectl working with your cluster
+
+### Setup
 Configure .env file
-```
+```bash
+cp .env.sample .env
 nano .env
+```
+
+Check these variables
+```
+export VAULT_HOST=STATIC IP HERE
+...
+export CONTEXT_VAULT_CLUSTER=CONTEXT TO YOUR CLUSTER
 ```
 
 
 Run Vault server setup  
 ```
+cd vault_server_setup
+./vault_server_setup.sh
+```
+
+Save tmp/vault-init in a safe place.
+```
+cd vault_server_setup
 ./vault_server_setup.sh
 ```
 
 
-Unseal Vault manually
+Unseal Vault manually (get the keys from tmp/vault-init)
 ```
 kubectl exec vault-0 -n vault -- vault operator unseal #KEY 1
 kubectl exec vault-0 -n vault -- vault operator unseal #KEY 2
 kubectl exec vault-0 -n vault -- vault operator unseal #KEY 3
 ```
 
+Set VAULT_TOKEN variable (get the token from tmp/vault-init)
+```bash
+cd ..
+nano .env
+```
+
+```bash
+# Vault Access token 
+export VAULT_TOKEN=YOUR TOKEN HERE
+```
+
 Add CA certificate as trusted
 ```
-sudo cp ${TMPDIR}/vault.ca /usr/local/share/ca-certificates/vault.crt
+sudo cp tmp/vault.ca /usr/local/share/ca-certificates/vault.crt
 sudo update-ca-certificates
 ```
 
-Add Vault to your hosts file and redirect port to Vault server
+
+
+
+
+ Source .env to load Vault Root token
 ```
-sudo echo -n "127.0.0.1       vault-server-tls" > /etc/hosts
-kubectl port-forward svc/vault -n vault 8200:8200
+source .env
 ```
 
-Export variables to access Vault
-```
-export VAULT_ADDR='https://vault-server-tls:8200'
-export VAULT_TOKEN=s.JZmF6XFaDDNSSA8B8FeyFiHX
-```
-
-Check vault status
+Check server vault status
 ```
 vault status
 ```
