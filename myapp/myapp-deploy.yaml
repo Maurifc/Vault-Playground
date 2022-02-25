@@ -16,11 +16,13 @@ spec:
         app:  myapp
       ### Use this block 
       annotations:
+        vault.hashicorp.com/ca-cert: /vault/tls/ca-bundle.crt
+        vault.hashicorp.com/tls-secret: vault-tls-secret
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/role: 'myapp' #secret access role
-        vault.hashicorp.com/agent-inject-secret-config: 'secret/data/myapp/config' #secret path
+        vault.hashicorp.com/agent-inject-secret-config: 'secret/data//dev-cluster/myapp/config' #secret path
         vault.hashicorp.com/agent-inject-template-config: | #format secret using key=value format
-          {{ with secret "secret/data/myapp/config" -}}
+          {{ with secret "secret/data/dev-cluster/myapp/config" -}}
           {{ range $k, $v := .Data.data }}
           {{ $k }}={{ $v }}
           {{ end }}
@@ -36,3 +38,10 @@ spec:
         args:
         - '-c'
         - 'export $(/bin/cat /vault/secrets/config) && env && sleep 1000' # load envs from secret destination file
+---
+# This service account are allowed to access secret (this is defined by myapp role)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: myapp-sa
+  namespace: default
