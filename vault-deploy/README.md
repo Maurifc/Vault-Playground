@@ -52,11 +52,7 @@ cd vault_server_setup
 ./vault_server_setup.sh
 ```
 
-Save tmp/vault-init in a safe place.
-```
-cd vault_server_setup
-./vault_server_setup.sh
-```
+> Save tmp/vault-init in a safe place
 
 
 Unseal Vault manually (get the keys from tmp/vault-init)
