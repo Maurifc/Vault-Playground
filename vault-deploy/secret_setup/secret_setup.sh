@@ -2,9 +2,9 @@
 
 # Check if .env exists
 printf "Sourcing envs from .env file\n";
-if [ -f .env ];
+if [ -f ../.env ];
 then
-    source .env;
+    source ../.env;
 else
     printf "Error: .env file not found\n";
     exit 1;
