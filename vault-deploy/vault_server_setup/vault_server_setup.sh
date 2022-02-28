@@ -91,11 +91,6 @@ helm install vault hashicorp/vault \
     -f custom_values.yaml \
     --version 0.19.0
 
-
-printf "\nPatching service loadbalancer with Static IP\n"
-envsubst < service_patch.yaml.tpl > ${TMPDIR}/service_patch.yaml
-kubectl patch service vault --patch-file ${TMPDIR}/service_patch.yaml
-
 printf "\nWaiting for Vault Server pods...\n"
 
 while [[ $pod_status != '"Running"' ]]
@@ -106,6 +101,10 @@ do
 done
 
 printf "\nVault Pod is running\n"
+
+printf "\nPatching service loadbalancer with Static IP\n"
+envsubst < service_patch.yaml.tpl > ${TMPDIR}/service_patch.yaml
+kubectl patch service vault --namespace $NAMESPACE --patch-file ${TMPDIR}/service_patch.yaml
 
 printf "\nInitializing Vault\nKeys saved at %s\n" $TMPDIR/vault-init
 kubectl exec -ti vault-0 --namespace $NAMESPACE -- vault operator init | sed 's/\x1b\[[0-9;]*m//g' >  $TMPDIR/vault-init
