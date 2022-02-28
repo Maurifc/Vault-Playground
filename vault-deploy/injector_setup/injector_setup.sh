@@ -43,6 +43,4 @@ envsubst < external-vault.yaml.tpl > ${TMPDIR}/external-vault.yaml
 kubectl apply -f tmp/external-vault.yaml
 
 printf "\nCreating CA Bundle Secret\n";
-export CA=$(sed ':a;N;$!ba;s/\n//g' vault.ca)
-envsubst < injector_ca_bundle.yaml.tpl > ${TMPDIR}/injector_ca_bundle.yaml
-kubectl apply -f ${TMPDIR}/injector_ca_bundle.yaml
+kubectl create secret generic vault-tls-secret --from-file=ca-bundle.crt=vault.ca
