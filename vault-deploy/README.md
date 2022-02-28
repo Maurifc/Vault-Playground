@@ -21,6 +21,7 @@
 - GCP Bucket (for Vault storage backend)
 - GCP Key ring (for auto unsealing)
 - GCP Service Account (Bucket Admin and cryptoKeyEncrypterDecrypter)
+- GCP Service Account Key (json file)
 - Static external IP
 - Kubectl working with your cluster
 
@@ -33,9 +34,12 @@ nano .env
 
 Set these variables
 ```
-export VAULT_HOST=STATIC IP HERE
+export VAULT_HOST=<STATIC IP HERE>
+export GCP_PROJECT=<GCP PROJECT ID>
+export GCS_BUCKET_NAME=<GCS BUCKET NAME>
+export VAULT_SA_NAME=<GCP SERVICE ACCOUNT NAME>
 ...
-export CONTEXT_VAULT_CLUSTER=KUBECTL CONTEXT (VAULT SERVER)
+export CONTEXT_VAULT_CLUSTER=<KUBECTL CONTEXT (VAULT SERVER)>
 ```
 
 **Drop your service account key (.json file) on vault_server_setup folder**  
@@ -149,6 +153,12 @@ export VAULT_HOST=<STATIC IP HERE>
 
 # Vault Access token
 export VAULT_TOKEN=<YOUR TOKEN HERE>
+export APP_NAME=mailapi
+export SECRET_CONTAINER=config
+export SERVICE_ACCOUNT=$APP_NAME-sa
+export SERVICE_ACCOUNT_NAMESPACE=development
+export ENVIRONMENT=thorus
+export APP_NAMESPACE=development
 ```
 
 Enter secret_setup directory
