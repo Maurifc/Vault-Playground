@@ -10,6 +10,12 @@ else
     exit 1;
 fi
 
+if [ ! -f vault_gcs_key.json ];
+then
+    printf "Error: vault_gcs_key.json file not found\n";
+    exit 1;
+fi
+
 printf "\nChanging context to ${CONTEXT_VAULT_CLUSTER}\n";
 kubectl config use-context $CONTEXT_VAULT_CLUSTER
 
@@ -82,13 +88,24 @@ kubectl create secret generic ${SECRET_NAME} \
         --from-file=vault.key=${TMPDIR}/vault.key \
         --from-file=vault.crt=${TMPDIR}/vault.crt \
         --from-file=vault.ca=${TMPDIR}/vault.ca
+        
 
 #####################
 #
 printf "\nInstalling Vault Server\n"
+
+printf "\nCreatig secret for GCP Service Account\n"
+kubectl create secret generic vault-gcs \
+        --namespace ${NAMESPACE} \
+        --from-file=vault_gcs_key.json
+
+printf "\nRendering custom_values.yaml template\n"
+envsubst < custom_values.yaml.tpl > ${TMPDIR}/custom_values.yaml
+
+printf "\nInstalling Helm Chart\n"
 helm install vault hashicorp/vault \
     --namespace ${NAMESPACE} \
-    -f custom_values.yaml \
+    -f ${TMPDIR}/custom_values.yaml \
     --version 0.19.0
 
 printf "\nWaiting for Vault Server pods...\n"
@@ -106,7 +123,9 @@ printf "\nPatching service loadbalancer with Static IP\n"
 envsubst < service_patch.yaml.tpl > ${TMPDIR}/service_patch.yaml
 kubectl patch service vault --namespace $NAMESPACE --patch-file ${TMPDIR}/service_patch.yaml
 
-printf "\nInitializing Vault\nKeys saved at %s\n" $TMPDIR/vault-init
+printf "\nInitializing Vault\n" $TMPDIR/vault-init
+sleep 3
 kubectl exec -ti vault-0 --namespace $NAMESPACE -- vault operator init | sed 's/\x1b\[[0-9;]*m//g' >  $TMPDIR/vault-init
+printf "\nKeys saved at %s\n" $TMPDIR/vault-init
 
 printf "Vault deployed!\nGet your keys at %s and CA certificate at %s" $TMPDIR/vault-init $TMPDIR/vault.ca
