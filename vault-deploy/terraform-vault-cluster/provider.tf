@@ -18,7 +18,7 @@ provider "google" {
 terraform {
   required_version = "~>1.1.6"
   backend "gcs" {
-    bucket = "terraform-tlg-states"
-    prefix = "ptm-hml/state"
+    bucket = var.tf_state_bucket_name
+    prefix = var.tfstate_prefix
   }
 }

@@ -4,12 +4,12 @@ variable "gke_cluster_name" {
 variable "gke_num_nodes" {
   default     = 2
 }
-
-# Provider
-variable "project_id" {
+variable "tf_state_bucket_name" {
+  default     = "terraform-tlg-states"
 }
 
-variable "credentials_file" {
+variable "tfstate_prefix" {
+  default = "ptm-hml/state"
 }
 
 variable "region" {
@@ -17,4 +17,11 @@ variable "region" {
 }
 variable "zone" {
   default = "southamerica-east1-a"
+}
+
+# Set at .tfvars file
+variable "project_id" {
+}
+
+variable "credentials_file" {
 }
