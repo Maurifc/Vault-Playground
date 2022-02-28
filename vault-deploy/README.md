@@ -9,25 +9,18 @@
 
 > Visão um pouco mais clara das features que nós poderíamos tirar proveito no vault
 
-## First Steps
-- Install Vault Server (with TLS) with Helm*
-- Install Vault Injector
-- Setup Vault Server: *
-  - Config Kubernetes Auth
-  - Create secrets
-  - Create role
-  - Create policy
-  - Create shell script
-- Terraform Cluster GKE  
-
 ## Next steps
-- Config SQL Server as Secret Engine
+- Firewall: Allow Port 8200 only to client clusters
 - Install Vault Server with HA (GCS)
+- Config SQL Server as Secret Engine
 
 ------
 ## Setup Vault Server
 ### Requirements
 - Kubernetes cluster
+- GCP Bucket (for Vault storage backend)
+- GCP Key ring (for auto unsealing)
+- GCP Service Account (Bucket Admin and cryptoKeyEncrypterDecrypter)
 - Static external IP
 - Kubectl working with your cluster
 
@@ -44,6 +37,9 @@ export VAULT_HOST=STATIC IP HERE
 ...
 export CONTEXT_VAULT_CLUSTER=KUBECTL CONTEXT (VAULT SERVER)
 ```
+
+**Drop your service account key (.json file) on vault_server_setup folder**  
+**Rename the json file to vault_gcp_key.json**
 
 
 Run Vault server setup  
@@ -145,6 +141,7 @@ cd auth_method_setup
 ### Requirements:
 - Vault credentials
 
+// TODO: Add instructions to setup .env with app and env info
 Set these variables at .env file
 ```
 # Vault Server IP Address (Check Terraform output)
@@ -163,6 +160,7 @@ Create a secret.json file from secret.json.sample
 ```
 cp secret.json.sample secret.json
 ```
+
 
 Edit secret.json according your needs
 ```
