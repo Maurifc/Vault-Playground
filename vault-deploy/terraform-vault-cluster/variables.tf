@@ -8,6 +8,10 @@ variable "tf_state_bucket_name" {
   default     = "terraform-tlg-states"
 }
 
+variable "vault_keyring_name" {
+  default     = "vault-unseal-kr"
+}
+
 variable "tfstate_prefix" {
   default = "ptm-hml/state"
 }
