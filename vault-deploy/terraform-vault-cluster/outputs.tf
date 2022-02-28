@@ -2,6 +2,10 @@ output "region" {
   value       = var.region
   description = "Region"
 }
+output "zone" {
+  value       = var.zone
+  description = "Zone"
+}
 
 output "project_id" {
   value       = var.project_id
