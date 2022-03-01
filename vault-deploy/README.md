@@ -11,7 +11,6 @@
 
 ## Next steps
 - Firewall: Allow Port 8200 only to client clusters
-- Install Vault Server with HA (GCS)
 - Config SQL Server as Secret Engine
 
 ------
