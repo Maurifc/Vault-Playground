@@ -23,12 +23,12 @@ vault secrets enable -version=2 -path=secret/ kv
 
 #
 printf "\nCreating secrets from file %s\n" $SECRET_FILE;
-vault kv put secret/$ENVIRONMENT/$APP_NAME/$SECRET_CONTAINER @$SECRET_FILE
+vault kv put secret/$ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER @$SECRET_FILE
 
 #
 printf "\nCreating policies\n";
 vault policy write $APP_NAME - <<EOF
-path "secret/data/$ENVIRONMENT/$APP_NAME/$SECRET_CONTAINER" {
+path "secret/data/$ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER" {
 capabilities = ["read"]
 }
 EOF
