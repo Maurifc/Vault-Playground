@@ -8,7 +8,7 @@ injector:
 server:
   ha:
     enabled: true
-    replicas: 3
+    replicas: 2
 
     config: |
       ui = false
@@ -31,8 +31,8 @@ server:
       seal "gcpckms" {
         project     = "$GCP_PROJECT"
         region      = "global"
-        key_ring    = "vault-helm-unseal-kr"
-        crypto_key  = "vault-helm-unseal-key"
+        key_ring    = "vault-unseal-kr"
+        crypto_key  = "vault-unseal-key"
       }
 
   extraEnvironmentVars:
