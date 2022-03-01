@@ -4,16 +4,9 @@ variable "gke_cluster_name" {
 variable "gke_num_nodes" {
   default     = 2
 }
-variable "tf_state_bucket_name" {
-  default     = "terraform-tlg-states"
-}
 
 variable "vault_keyring_name" {
   default     = "vault-unseal-kr"
-}
-
-variable "tfstate_prefix" {
-  default = "ptm-hml/state"
 }
 
 variable "region" {
