@@ -10,9 +10,9 @@ else
     exit 1;
 fi
 
-if [ ! -f vault_gcs_key.json ];
+if [ ! -f vault_gcp_key.json ];
 then
-    printf "Error: vault_gcs_key.json file not found\n";
+    printf "Error: vault_gcp_key.json file not found\n";
     exit 1;
 fi
 
@@ -102,7 +102,7 @@ printf "\nInstalling Vault Server\n"
 printf "\nCreatig secret for GCP Service Account\n"
 kubectl create secret generic vault-gcs \
         --namespace ${NAMESPACE} \
-        --from-file=vault_gcs_key.json
+        --from-file=vault_gcp_key.json
 
 printf "\nRendering custom_values.yaml template\n"
 envsubst < custom_values.yaml.tpl > ${TMPDIR}/custom_values.yaml
@@ -129,8 +129,8 @@ envsubst < service_patch.yaml.tpl > ${TMPDIR}/service_patch.yaml
 kubectl patch service vault --namespace $NAMESPACE --patch-file ${TMPDIR}/service_patch.yaml
 
 printf "\nInitializing Vault\n" $TMPDIR/vault-init
-sleep 3
+sleep 10
 kubectl exec -ti vault-0 --namespace $NAMESPACE -- vault operator init | sed 's/\x1b\[[0-9;]*m//g' >  $TMPDIR/vault-init
-printf "\nKeys saved at %s\n" $TMPDIR/vault-init
+printf "Keys saved at %s\n" $TMPDIR/vault-init
 
 printf "Vault deployed!\nGet your keys at %s and CA certificate at %s" $TMPDIR/vault-init $TMPDIR/vault.ca

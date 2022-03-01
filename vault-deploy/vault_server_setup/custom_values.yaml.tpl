@@ -37,7 +37,7 @@ server:
 
   extraEnvironmentVars:
     VAULT_CACERT: /vault/userconfig/vault-server-tls/vault.ca
-    GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/vault-gcs/vault_gcs_key.json
+    GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/vault-gcs/vault_gcp_key.json
 
   extraVolumes:
     - type: secret
@@ -52,21 +52,6 @@ server:
     - mountPath: "/vault/userconfig/vault-gcs"
       name: vault-gcs
       readOnly: true
-
-  standalone:
-    enabled: false
-    config: |
-      listener "tcp" {
-        address = "[::]:8200"
-        cluster_address = "[::]:8201"
-        tls_cert_file = "/vault/userconfig/vault-server-tls/vault.crt"
-        tls_key_file  = "/vault/userconfig/vault-server-tls/vault.key"
-        tls_client_ca_file = "/vault/userconfig/vault-server-tls/vault.ca"
-      }
-
-      storage "file" {
-        path = "/vault/data"
-      }
 
   service:
     type: LoadBalancer
