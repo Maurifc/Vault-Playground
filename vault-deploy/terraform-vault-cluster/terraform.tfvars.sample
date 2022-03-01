@@ -1,0 +1,5 @@
+# GCP Project ID
+project_id       = "PROJECT_ID_HERE"
+
+# Service Account key name
+credentials_file = "gcp-key.json"
