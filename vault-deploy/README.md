@@ -41,11 +41,20 @@ export VAULT_SA_NAME=<GCP SERVICE ACCOUNT NAME>
 export CONTEXT_VAULT_CLUSTER=<KUBECTL CONTEXT (VAULT SERVER)>
 ```
 
-**Drop your service account key (.json file) on vault_server_setup folder**  
-**Rename the json file to vault_gcp_key.json**
+Source the .env file
+```bash
+source .env
+```
 
+Create a service account key and save it to vault_server_setup folder
+```bash
+gcloud iam service-accounts keys create \
+      --iam-account $VAULT_SA vault_server_setup/vault_gcp_key.json
+```
 
-Run Vault server setup  
+> Ensure the key file's name is: vault_gcp_key.json
+
+Run setup  
 ```
 cd vault_server_setup
 ./vault_server_setup.sh
@@ -53,23 +62,18 @@ cd vault_server_setup
 
 > Save tmp/vault-init in a safe place
 
-
-Unseal Vault manually (get the keys from tmp/vault-init)
-```
-kubectl exec vault-0 -n vault -- vault operator unseal #KEY 1
-kubectl exec vault-0 -n vault -- vault operator unseal #KEY 2
-kubectl exec vault-0 -n vault -- vault operator unseal #KEY 3
-```
-
 Set VAULT_TOKEN variable (get the token from tmp/vault-init)
 ```bash
 cd ..
 nano .env
-```
 
-```bash
 # Vault Access token 
 export VAULT_TOKEN=YOUR TOKEN HERE
+```
+
+Source .env to load Vault Root token
+```
+source .env
 ```
 
 Add CA certificate as trusted
@@ -78,14 +82,25 @@ sudo cp tmp/vault.ca /usr/local/share/ca-certificates/vault.crt
 sudo update-ca-certificates
 ```
 
-Source .env to load Vault Root token
-```
-source .env
-```
+Check Vault server status
+```bash
+$ vault status
+Key                      Value
+---                      -----
+Recovery Seal Type       shamir
+Initialized              true
+Sealed                   false
+Total Recovery Shares    5
+Threshold                3
+Version                  1.9.2
+Storage Type             gcs
+Cluster Name             vault-cluster-2a5575ec
+Cluster ID               8c152c50-7264-04e3-b330-e03b97ff68d0
+HA Enabled               true
+HA Cluster               https://vault-1.vault-internal:8201
+HA Mode                  standby
+Active Node Address      https://10.10.10.100:8200
 
-Check server vault status
-```
-vault status
 ```
 
 ## Setup Injector
