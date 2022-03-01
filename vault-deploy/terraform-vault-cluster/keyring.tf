@@ -1,5 +1,5 @@
 resource "google_kms_key_ring" "keyring" {
-  name     = var.vault_keyring_name
+  name     = "vault-unseal-kr"
   location = "global"
 }
 

@@ -5,10 +5,6 @@ variable "gke_num_nodes" {
   default     = 2
 }
 
-variable "vault_keyring_name" {
-  default     = "vault-unseal-kr"
-}
-
 variable "region" {
   default = "southamerica-east1"
 }
