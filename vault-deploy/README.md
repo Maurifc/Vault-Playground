@@ -158,8 +158,8 @@ cd auth_method_setup
 ## Insert Secrets, Policy and Role
 ### Requirements:
 - Vault credentials
+- Client Pod informations
 
-// TODO: Add instructions to setup .env with app and env info
 Set these variables at .env file
 ```
 # Vault Server IP Address (Check Terraform output)
@@ -167,12 +167,24 @@ export VAULT_HOST=<STATIC IP HERE>
 
 # Vault Access token
 export VAULT_TOKEN=<YOUR TOKEN HERE>
-export APP_NAME=mailapi
+
+##############
+#     App    #
+##############
+# Application Name
+export APP_NAME=myapp
+
+# Secret Container inside Vault
 export SECRET_CONTAINER=config
+
+# Service account to be used by your application pod
 export SERVICE_ACCOUNT=$APP_NAME-sa
-export SERVICE_ACCOUNT_NAMESPACE=development
-export ENVIRONMENT=thorus
-export APP_NAMESPACE=development
+
+# Service Account Namespace
+export SERVICE_ACCOUNT_NAMESPACE=default
+
+# Secret environment: cluster name, hostname, etc...
+export ENVIRONMENT=mycluster
 ```
 
 Enter secret_setup directory
