@@ -20,7 +20,7 @@ then
 fi
 
 printf "\nChecking if injector is running\n";
-if ! kubectl get deploy vault-agent-injector; 
+if ! kubectl get --namespace $NAMESPACE deploy vault-agent-injector; 
 then
     printf "\nError: Install Vault Injector on client cluster before setting up authentication method\n";
     exit 1;
@@ -31,8 +31,8 @@ vault auth enable kubernetes
 
 #
 printf "\nGetting info from client cluster\n";
-VAULT_HELM_SECRET_NAME=$(kubectl get secrets --output=json | jq -r '.items[].metadata | select(.name|startswith("vault-token-")).name')
-TOKEN_REVIEW_JWT=$(kubectl get secret $VAULT_HELM_SECRET_NAME --output='go-template={{ .data.token }}' | base64 --decode)
+VAULT_HELM_SECRET_NAME=$(kubectl get secrets --namespace $NAMESPACE --output=json | jq -r '.items[].metadata | select(.name|startswith("vault-token-")).name')
+TOKEN_REVIEW_JWT=$(kubectl get secret --namespace $NAMESPACE $VAULT_HELM_SECRET_NAME --output='go-template={{ .data.token }}' | base64 --decode)
 KUBE_CA_CERT=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.certificate-authority-data}' | base64 --decode)
 KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 

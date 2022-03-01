@@ -44,7 +44,12 @@ DNS.1 = ${SERVICE}
 DNS.2 = ${SERVICE}.${NAMESPACE}
 DNS.3 = ${SERVICE}.${NAMESPACE}.svc
 DNS.4 = ${SERVICE}.${NAMESPACE}.svc.cluster.local
-DNS.5 = external-vault
+DNS.5 = ${SERVICE}.${NAMESPACE}.svc.cluster.local
+DNS.1 = external-vault
+DNS.2 = external-vault.${NAMESPACE}
+DNS.3 = external-vault.${NAMESPACE}.svc
+DNS.4 = external-vault.${NAMESPACE}.svc.cluster.local
+DNS.5 = external-vault.${NAMESPACE}.svc.cluster.local
 IP.1 = 127.0.0.1
 IP.2 = ${VAULT_HOST}
 EOF

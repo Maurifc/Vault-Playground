@@ -28,19 +28,27 @@ fi
 if [[ $TLS_ENABLED = true ]];
 then
     printf "\nInstalling vault Injector: TLS Enabled\n";
-    EXTERNAL_URL="https://external-vault:8200"
+    EXTERNAL_URL="https://external-vault.${NAMESPACE}.svc.cluster.local:8200/"
 else
     printf "\nInstalling vault Injector: TLS Disable\nd"
-    EXTERNAL_URL="http://external-vault:8200"
+    EXTERNAL_URL="http://external-vault.${NAMESPACE}.svc.cluster.local:8200/"
 fi
 
+printf "\nCreating namespace\n"
+kubectl create namespace ${NAMESPACE}
+
+printf "\nInstalling Vault injector\n"
 helm install vault hashicorp/vault \
+    --namespace ${NAMESPACE} \
     --set "injector.externalVaultAddr=${EXTERNAL_URL}" --version 0.19.0
 
 #
 printf "\nCreating Service and Endpoint for injector\n";
 envsubst < external-vault.yaml.tpl > ${TMPDIR}/external-vault.yaml
-kubectl apply -f tmp/external-vault.yaml
+kubectl apply -f tmp/external-vault.yaml \
+    --namespace ${NAMESPACE} \
 
 printf "\nCreating CA Bundle Secret\n";
-kubectl create secret generic vault-tls-secret --from-file=ca-bundle.crt=vault.ca
+kubectl create secret generic vault-tls-secret \
+    --namespace ${NAMESPACE} \
+    --from-file=ca-bundle.crt=vault.ca
