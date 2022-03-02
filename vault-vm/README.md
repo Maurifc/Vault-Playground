@@ -14,6 +14,15 @@ Close this terminal cause the server to stop
 vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
 ```
 
+## Export environments variables
+On your local terminal set these variables:
+- Use 'root' as your root token when communicating with the server
+- Use the IP set in your Vagrantfile
+```bash
+export VAULT_TOKEN=root
+export VAULT_ADDR='http://192.168.56.50:8200'
+```
+
 ## Pause VM when not using it
 From another terminal, but in the vault-vm folder...
 ```bash
