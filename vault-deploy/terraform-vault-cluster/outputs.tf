@@ -1,3 +1,22 @@
+output "vault_bucket" {
+  value       = google_storage_bucket.vault-data.name
+  description = "Vault Bucket"
+}
+
+output "vault_service_account" {
+  value       = google_service_account.vault_sa.account_id
+  description = "GCP Vault Service Account"
+}
+
+output "vault_keyring_name" {
+  value       = google_kms_key_ring.keyring.name
+  description = "GCP Vault Keyring"
+}
+
+output "vault_key_name" {
+  value       = google_kms_crypto_key.vault-unseal-key.name
+  description = "GCP Vault Key"
+}
 output "region" {
   value       = var.region
   description = "Region"
