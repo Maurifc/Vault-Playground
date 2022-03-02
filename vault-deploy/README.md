@@ -210,3 +210,38 @@ Put the secret on Vault server
 ./secret_setup.sh
 ```
 
+## Setup a new Namespace
+If your Vault server and and your client cluster is already setup, all you have to do is create a secret with the CA as described below.
+
+Export NAMESPACE env variable
+```bash
+export NAMESPACE=mynamespace
+```
+Create the namespace (if you didn't yet)
+```bash
+kubectl create namespace $NAMESPACE
+```
+
+Due to get vault.ca file, your kubectl should be ready to communicate with Vault Server Cluster
+
+Change context to Vault Server Cluster
+```bash
+kubectl config use-context CONTEXT_VAULT_CLUSTER
+```
+
+> Ensure you are on correct context
+```bash
+kubectl config current-context
+```
+
+Now get the CA file
+```bash
+kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}' | base64 -d > /tmp/vault.ca
+```
+
+Create the secret from the vault.ca file
+```bash
+kubectl create secret generic vault-tls-secret \
+    --namespace $NAMESPACE \
+    --from-file=ca-bundle.crt=/tmp/vault.ca
+```
