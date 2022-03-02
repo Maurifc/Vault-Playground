@@ -107,6 +107,9 @@ kubectl create secret generic vault-gcs \
 printf "\nRendering custom_values.yaml template\n"
 envsubst < custom_values.yaml.tpl > ${TMPDIR}/custom_values.yaml
 
+printf "\nAdding Hashcorp Helm repo\n"
+helm repo add hashicorp https://helm.releases.hashicorp.com
+
 printf "\nInstalling Helm Chart\n"
 helm install vault hashicorp/vault \
     --namespace ${NAMESPACE} \
