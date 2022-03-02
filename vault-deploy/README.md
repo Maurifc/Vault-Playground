@@ -78,7 +78,7 @@ source .env
 
 Add CA certificate as trusted
 ```
-sudo cp tmp/vault.ca /usr/local/share/ca-certificates/vault.crt
+sudo cp vault_server_setup/tmp/vault.ca /usr/local/share/ca-certificates/vault.crt
 sudo update-ca-certificates
 ```
 
