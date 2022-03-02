@@ -47,8 +47,3 @@ printf "\nCreating Service and Endpoint for injector\n";
 envsubst < external-vault.yaml.tpl > ${TMPDIR}/external-vault.yaml
 kubectl apply -f tmp/external-vault.yaml \
     --namespace ${NAMESPACE} \
-
-printf "\nCreating CA Bundle Secret\n";
-kubectl create secret generic vault-tls-secret \
-    --namespace ${NAMESPACE} \
-    --from-file=ca-bundle.crt=vault.ca
