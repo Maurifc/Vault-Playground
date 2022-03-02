@@ -9,12 +9,6 @@ else
     exit 1;
 fi
 
-if [ ! -f vault.ca ];
-then
-    printf "Error: vault.ca file not found\n";
-    exit 1;
-fi
-
 printf "\nChanging context to ${CONTEXT_CLIENT_CLUSTER}\n";
 kubectl config use-context $CONTEXT_CLIENT_CLUSTER
 
@@ -36,7 +30,6 @@ fi
 
 printf "\nCreating namespace\n"
 kubectl create namespace ${NAMESPACE}
-
 
 printf "\nAdding Hashcorp Helm repo\n"
 helm repo add hashicorp https://helm.releases.hashicorp.com
