@@ -17,7 +17,7 @@ then
     exit 1;
 fi
 
-# Check if kv is enablet on path secret/
+# Check if kv is enabled on path secret/
 kvEnabled=$(vault secrets list | grep secret/ | wc -l)
 
 printf "\nEnabling kv secrets v2\n";
@@ -28,7 +28,6 @@ else
     vault secrets enable -version=2 -path=secret/ kv
 fi;
 
-############
 printf "\nCreating secrets from file %s\n" $SECRET_FILE;
 vault kv put secret/$ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER @$SECRET_FILE
 
