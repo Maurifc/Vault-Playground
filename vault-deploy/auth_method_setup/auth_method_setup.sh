@@ -27,7 +27,7 @@ then
 fi
 
 printf "\nEnabling Vault Kubernetes Auth Method\n";
-vault auth enable kubernetes
+vault auth enable --path=$ENVIRONMENT kubernetes
 
 #
 printf "\nGetting info from client cluster\n";
@@ -38,7 +38,7 @@ KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.cl
 
 #
 printf "\nSetting up Kubernetes Auth Method\n";
-vault write auth/kubernetes/config \
+vault write auth/$ENVIRONMENT/config \
         token_reviewer_jwt="$TOKEN_REVIEW_JWT" \
         kubernetes_host="$KUBE_HOST" \
         kubernetes_ca_cert="$KUBE_CA_CERT" \
