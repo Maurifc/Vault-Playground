@@ -43,6 +43,6 @@ EOF
 printf "\nCreating kubenetes access role\n";
 vault write auth/$ENVIRONMENT/role/$APP_NAME-$APP_NAMESPACE \
         bound_service_account_names=$APP_NAME-sa \
-        bound_service_account_namespaces=$SERVICE_ACCOUNT_NAMESPACE \
+        bound_service_account_namespaces=$APP_NAMESPACE \
         policies=$APP_NAME-$APP_NAMESPACE \
         ttl=24h
