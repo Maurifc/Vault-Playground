@@ -18,23 +18,23 @@ then
 fi
 
 # Check if kv is enabled on path secret/
-kvEnabled=$(vault secrets list | grep secret/ | wc -l)
+kvEnabled=$(vault secrets list | grep $ENVIRONMENT/ | wc -l)
 
 printf "\nEnabling kv secrets v2\n";
 if [ $kvEnabled = '1' ];
 then
     printf 'kv already enabled on secrets/\n'
 else
-    vault secrets enable -version=2 -path=secret/ kv
+    vault secrets enable -version=2 -path=$ENVIRONMENT/ kv
 fi;
 
 printf "\nCreating secrets from file %s\n" $SECRET_FILE;
-vault kv put secret/$ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER @$SECRET_FILE
+vault kv put $ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER @$SECRET_FILE
 
 #
 printf "\nCreating policies\n";
 vault policy write $APP_NAME-$APP_NAMESPACE - <<EOF
-path "secret/data/$ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER" {
+path "$ENVIRONMENT/data/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER" {
 capabilities = ["read"]
 }
 EOF
