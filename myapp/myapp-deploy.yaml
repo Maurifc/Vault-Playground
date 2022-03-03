@@ -20,9 +20,9 @@ spec:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/role: 'myapp-homolog' #secret access role
         vault.hashicorp.com/auth-path: 'auth/dev-cluster' # auth method path (default auth/kubernetes)
-        vault.hashicorp.com/agent-inject-secret-config: 'secret/data/dev-cluster/homolog/myapp/config' #secret path
+        vault.hashicorp.com/agent-inject-secret-config: 'dev-cluster/data/homolog/myapp/config' #secret path
         vault.hashicorp.com/agent-inject-template-config: | #format secret using key=value format
-          {{ with secret "secret/data/dev-cluster/homolog/myapp/config" -}}
+          {{ with secret "dev-cluster/data/homolog/myapp/config" -}}
           {{ range $k, $v := .Data.data }}
           {{ $k }}={{ $v }}
           {{ end }}
