@@ -33,6 +33,7 @@ kubectl create namespace ${NAMESPACE}
 
 printf "\nAdding Hashcorp Helm repo\n"
 helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update hashicorp
 
 printf "\nInstalling Vault injector\n"
 helm install vault hashicorp/vault \

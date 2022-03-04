@@ -109,6 +109,7 @@ envsubst < custom_values.yaml.tpl > ${TMPDIR}/custom_values.yaml
 
 printf "\nAdding Hashcorp Helm repo\n"
 helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update hashicorp
 
 printf "\nInstalling Helm Chart\n"
 helm install vault hashicorp/vault \
