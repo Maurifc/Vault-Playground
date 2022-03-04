@@ -24,7 +24,7 @@ then
     printf "\nInstalling vault Injector: TLS Enabled\n";
     EXTERNAL_URL="https://external-vault.${NAMESPACE}.svc.cluster.local:8200/"
 else
-    printf "\nInstalling vault Injector: TLS Disable\nd"
+    printf "\nInstalling vault Injector: TLS Disabled\n"
     EXTERNAL_URL="http://external-vault.${NAMESPACE}.svc.cluster.local:8200/"
 fi
 

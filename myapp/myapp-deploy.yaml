@@ -18,7 +18,7 @@ spec:
         vault.hashicorp.com/ca-cert: /vault/tls/ca-bundle.crt
         vault.hashicorp.com/tls-secret: vault-tls-secret
         vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/role: 'myapp-homolog' #secret access role
+        vault.hashicorp.com/role: 'devcluster-homolog-myapp' #secret access role
         vault.hashicorp.com/auth-path: 'auth/dev-cluster' # auth method path (default auth/kubernetes)
         vault.hashicorp.com/agent-inject-secret-config: 'dev-cluster/data/homolog/myapp/config' #secret path
         vault.hashicorp.com/agent-inject-template-config: | #format secret using key=value format
@@ -39,7 +39,7 @@ spec:
         - '-c'
         - 'export $(/bin/cat /vault/secrets/config) && env && sleep 1000' # load envs from secret destination file
 ---
-# This service account are allowed to access secret (this is defined by myapp role)
+# This service account is allowed to access secret (this is defined by myapp role)
 apiVersion: v1
 kind: ServiceAccount
 metadata:

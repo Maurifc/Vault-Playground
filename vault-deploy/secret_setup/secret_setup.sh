@@ -33,7 +33,7 @@ vault kv put $ENVIRONMENT/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER @$SECRET_FI
 
 #
 printf "\nCreating policies\n";
-vault policy write $APP_NAME-$APP_NAMESPACE - <<EOF
+vault policy write $ENVIRONMENT-$APP_NAMESPACE-$APP_NAME - <<EOF
 path "$ENVIRONMENT/data/$APP_NAMESPACE/$APP_NAME/$SECRET_CONTAINER" {
 capabilities = ["read"]
 }
@@ -41,8 +41,8 @@ EOF
 
 #
 printf "\nCreating kubenetes access role\n";
-vault write auth/$ENVIRONMENT/role/$APP_NAME-$APP_NAMESPACE \
+vault write auth/$ENVIRONMENT/role/$ENVIRONMENT-$APP_NAMESPACE-$APP_NAME \
         bound_service_account_names=$APP_NAME-sa \
         bound_service_account_namespaces=$APP_NAMESPACE \
-        policies=$APP_NAME-$APP_NAMESPACE \
+        policies=$ENVIRONMENT-$APP_NAMESPACE-$APP_NAME \
         ttl=24h
