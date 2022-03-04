@@ -2,8 +2,6 @@
 
 DATABASE_NAME=""
 DATABASE_HOST=""
-ROLE=""
-ROLE_FILE=""
 PASSWORD=""
 USER_NAME=""
 PROJECT=""
@@ -30,30 +28,15 @@ fi
 
 if [ ! -n "$DATABASE_NAME" ] || 
    [ ! -n "$DATABASE_HOST" ] ||
-   [ ! -n "$ROLE" ] ||
-   [ ! -n "$ROLE_FILE" ] ||
    [ ! -n "$PASSWORD" ] ||
    [ ! -n "$USER_NAME" ] ||
    [ ! -n "$PROJECT" ] ||
    [ ! -n "$INSTANCE" ]
 then
-    echo -n "Enter role name: "
-    read ROLE
-
-    echo -n "Enter SQL file path to create role: "
-    read ROLE_FILE
-
-    if [ ! -f $ROLE_FILE ];
-    then
-        echo "File ${ROLE_FILE} not found";
-        echo "Aborting..."
-        exit 1;
-    fi
-
     echo -n "GCP Project: "
     read PROJECT
     
-    echo -n "Intance: "
+    echo -n "Instance: "
     read INSTANCE
 
     echo -n "Enter Database name: "
@@ -74,8 +57,8 @@ else
 fi
 
 echo "Vault Server: "$VAULT_ADDR
+echo "GCP Project: "$PROJECT
 echo "DB Instance: "$INSTANCE
-echo "User Role: "$ROLE
 echo "Database Name: "$DATABASE_NAME
 echo "Database Host: "$DATABASE_HOST
 echo "Database User: "$USER_NAME
@@ -97,23 +80,11 @@ vault secrets enable database
 # Configure Vault with the proper plugin and connection information:
 #              GCP   INTANCE/VM
 DATABASE_URI=$PROJECT-$INSTANCE-$DATABASE_NAME
-ROLE_URI=$DATABASE_URI-$ROLE
 
 printf "\nWriting database config to Vault\n"
 vault write database/config/$DATABASE_URI \
     plugin_name=postgresql-database-plugin \
-    allowed_roles=$ROLE_URI \
+    allowed_roles=* \
     connection_url="postgresql://{{username}}:{{password}}@${DATABASE_HOST}:5432/${DATABASE_NAME}" \
     username=$USER_NAME \
     password=$PASSWORD
-
-printf "\nCreating Vault role\n"
-vault write database/roles/$ROLE_URI \
-    db_name=$DATABASE_URI \
-    creation_statements=@$ROLE_FILE
-    default_ttl="1h" \
-    max_ttl="24h"
-
-printf "\nRole created\n"
-printf "\nYou can create secrets with the following command:"
-printf "\nvault read database/creds/${ROLE_URI}\n"
