@@ -7,6 +7,62 @@ USER_NAME=""
 PROJECT=""
 INSTANCE=""
 
+# Enable the database secrets engine if it is not already enabled:
+enable_postgres_secret_engine(){
+    printf "\nEnabling Vault secret database\n"
+    vault secrets enable database
+}
+
+# Config access to target database
+config_vault_database(){
+    printf "\nWriting database config to Vault\n"    
+    printf "\nURI = ${DATABASE_URI}\n"   
+    vault write database/config/$DATABASE_URI \
+        plugin_name=postgresql-database-plugin \
+        allowed_roles=* \
+        connection_url="postgresql://{{username}}:{{password}}@${DATABASE_HOST}:5432/${DATABASE_NAME}" \
+        username=$USER_NAME \
+        password=$PASSWORD
+}
+
+# Configure Vault with the proper plugin and connection information:
+#              GCP   INTANCE/VM
+create_roles(){
+
+    for role in ${ROLES[@]}
+    do
+        printf "\nCreating Database Role: ${role}\n"
+        vault write database/roles/$DATABASE_URI-$role \
+            db_name=$DATABASE_URI \
+            creation_statements=@$role.sql
+            default_ttl="1h" \
+            max_ttl="24h"
+    done
+}
+
+# Create Creadentials access policies
+create_policies(){
+    for role in ${ROLES[@]}
+    do
+        printf "\nCreating policy: ${role}\n" 
+    vault policy write ${DATABASE_URI}-ro - <<EOF
+path "database/creds/${DATABASE_URI}-$role" {
+capabilities = ["read"]
+}
+EOF
+    done
+}
+
+
+print_results(){
+    printf "\nYou can, now, get secrets with the following commands:\n"
+
+    for role in ${ROLES[@]}
+    do
+        printf "vault read database/creds/${DATABASE_URI}-${role}\n"
+    done
+}
+
 # Check if .env exists
 if [ -f .env ];
 then
@@ -73,18 +129,18 @@ then
     exit 1;
 fi
 
-# Enable the database secrets engine if it is not already enabled:
-printf "\nEnabling Vault secret database\n"
-vault secrets enable database
-
 # Configure Vault with the proper plugin and connection information:
 #              GCP   INTANCE/VM
 DATABASE_URI=$PROJECT-$INSTANCE-$DATABASE_NAME
 
-printf "\nWriting database config to Vault\n"
-vault write database/config/$DATABASE_URI \
-    plugin_name=postgresql-database-plugin \
-    allowed_roles=* \
-    connection_url="postgresql://{{username}}:{{password}}@${DATABASE_HOST}:5432/${DATABASE_NAME}" \
-    username=$USER_NAME \
-    password=$PASSWORD
+# MAIN
+enable_postgres_secret_engine
+
+config_vault_database
+
+create_roles
+
+create_policies
+
+# Results
+print_results
