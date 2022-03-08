@@ -159,7 +159,8 @@ load_env_file(){
         source .env;
         set +a
     else
-        printf ".env file not found\n\n";
+        printf "Error: .env file not found at $(pwd)/\n";
+        exit 0;
     fi
 }
 
