@@ -46,6 +46,31 @@ ask_user(){
     fi
 }
 
+# Check if necessary files are present (SQLs, Certs and Keys)
+check_necessary_files(){
+    printf "\nChecking Postgres certs and keys...\n"
+
+    if 
+        [ ! -f client-cert.pem ] ||
+        [ ! -f client-key.pem ] ||
+        [ ! -f server-ca.pem ]    
+    then
+        printf "Error: missing Postgres certificates or keys. Check Wiki instructions.\n";
+        exit 1
+    fi
+
+    printf "Checking SQL files (roles)...\n"
+    for role in "${ROLES[@]}"
+    do
+        fileName=$role.sql
+        if [ ! -f "$fileName" ]
+        then
+            printf "\nError. File %s not found!\n" "$fileName"
+            exit 1
+        fi
+    done
+}
+
 # Enable the database secrets engine if it is not already enabled:
 enable_postgres_secret_engine(){
     printf "\nEnabling Vault secret database\n"
@@ -175,6 +200,9 @@ load_env_file
 check_vault_server
 print_env
 ask_user
+
+# Check files
+check_necessary_files
 
 # Enable Postgres Secret Engine
 enable_postgres_secret_engine
