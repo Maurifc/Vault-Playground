@@ -112,7 +112,9 @@ print_results(){
 # Check if .env exists
 if [ -f .env ];
 then
+    set -a
     source .env;
+    set +a
 else
     printf ".env file not found\n\n";
 fi
